@@ -1,0 +1,58 @@
+<?php
+
+/* 
+ * @file
+ * Example tutorial , math question module.
+ */
+
+/**
+* Implements hook_menu().
+*/
+function mathquestion_menu() {
+  $items['question'] = array(
+    'title' => 'Math Question Module',
+    'description' => 'Mathquestion Description.... :) ',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mathquestion_page'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer_site_configuration'),
+    'menu_name' => 'management',
+  );
+return $items;
+}
+/**
+* Building the user-interface (the form)
+*/
+function mathquestion_page() {
+  //The form textarea field... i think
+  $form ['asdfgh'] = array(
+    '#type' => 'item',
+    '#title' => t('Question : What is < number1 > + < number2 > ?'),
+  );
+  
+  $form['mathquestion'] = array(
+   '#type' => 'textfield',
+   '#title' => t('Answer Here:'),
+   '#description' => t('Translatable description here !'),
+   '#default_value' => '<Enter answer here>',
+  );
+  // The form submit field.
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Check my answer !')
+  );
+  return $form; 
+}
+
+ /** 
+ * Submit function for the Mathquestion page (user interface).
+ */
+function mathquestion_submit($form, $form_state) {
+  
+  $answer = $form_state['input']['mathquestion'];
+  //$words = explode("\r\n", $form_state['input']['wordlist_words']);   
+  check_answer($answer);
+  drupal_set_message(t('The OK STATUS ANSWER'));
+  $words = explode("\r\n", $form_state['input']['wordlist_words']);
+  
+}

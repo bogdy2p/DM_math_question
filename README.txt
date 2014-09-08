@@ -1,0 +1,1 @@
+Incercare modul de "anti-bot".
