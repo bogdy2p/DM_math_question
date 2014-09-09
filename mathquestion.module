@@ -1,16 +1,19 @@
 <?php
 
-/* 
+/*
  * @file
  * Example tutorial , math question module.
  */
-
+  //$_SESSION['nr1'] = rand(1, 10);
+  //$_SESSION['nr2'] = rand(1, 10);
 /**
-* Implements hook_menu().
-*/
+ * Implements hook_menu().
+ */
 function mathquestion_menu() {
+  $_SESSION['nr1'] = rand(1, 10);
+  $_SESSION['nr2'] = rand(1, 10);
   $items['question'] = array(
-    'title' => 'Math Question Module',
+    'title' => 'Most Annoying Module',
     'description' => 'Mathquestion Description.... :) ',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('mathquestion_page'),
@@ -18,41 +21,83 @@ function mathquestion_menu() {
     'access arguments' => array('administer_site_configuration'),
     'menu_name' => 'management',
   );
-return $items;
+  return $items;
 }
+
 /**
-* Building the user-interface (the form)
-*/
-function mathquestion_page() {
-  //The form textarea field... i think
-  $form ['asdfgh'] = array(
-    '#type' => 'item',
-    '#title' => t('Question : What is < number1 > + < number2 > ?'),
+ * Building the user-interface (the form).
+ */
+function mathquestion_page($form, &$form_state) {
+//  dpm('FORM ONLY mathquestion_PAGE');
+//  dpm($form);
+//  dpm('FORM_STATE mathquestion_PAGE');
+//  dpm($form_state);
+
+  //hidden form field value
+  $form['nr1'] = array(
+    '#type' => 'value',
+    '#value' => $_SESSION['nr1'],
   );
-  
+  //hidden form field value2
+  $form['nr2'] = array(
+    '#type' => 'value',
+    '#value' => $_SESSION['nr2'],
+  );
+  //form field for the question
+  $form['form_question'] = array(
+    '#type' => 'item',
+    '#markup' => 'What is ' . $_SESSION['nr1'] . ' + ' . $_SESSION['nr2'] . '?',
+  );
+  //form field for the input of the answer
   $form['mathquestion'] = array(
-   '#type' => 'textfield',
-   '#title' => t('Answer Here:'),
-   '#description' => t('Translatable description here !'),
-   '#default_value' => '<Enter answer here>',
+    '#type' => 'textfield',
+    '#title' => t('Answer Here:'),
+    '#description' => t('Translatable description here !'),
+    '#default_value' => '',
   );
   // The form submit field.
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Check my answer !')
   );
-  return $form; 
+//  dpm($form);
+  return $form;
 }
-
- /** 
+/**
  * Submit function for the Mathquestion page (user interface).
  */
-function mathquestion_submit($form, $form_state) {
+function mathquestion_page_submit($form, &$form_state) {
+  //dpm('submit');
+  drupal_set_message(t('GOOD ANSWER !:)'));
+  menu_rebuild();
+//  dpm('FORM ONLY mathquestion_PAGE_SUBMIT');
+//  dpm($form);
+//  dpm('FORM_STATE mathquestion_PAGE_SUBMIT');
+//  dpm($form_state);
+     // cred ca face clear cache la menu.. :)
+  //drupal_flush_all_caches();
+	//cache_clear_all(NULL, 'cache_page', '*');
+}
+
+function mathquestion_page_validate($form, &$form_state) {
+//dpm('validate');
+//  dpm('FORM ONLY mathquestion_PAGE_VALIDATE');
+//  dpm($form);
+//  dpm('FORM_STATE mathquestion_PAGE_VALIDATE');
+//  dpm($form_state);
+ 
+  $input_data = $form_state['values']['mathquestion'];
   
-  $answer = $form_state['input']['mathquestion'];
-  //$words = explode("\r\n", $form_state['input']['wordlist_words']);   
-  check_answer($answer);
-  drupal_set_message(t('The OK STATUS ANSWER'));
-  $words = explode("\r\n", $form_state['input']['wordlist_words']);
+  $answer_official = $_SESSION['nr1'] + $_SESSION['nr2'];
   
+//    dpm('You entered '. $input_data .
+//        ' , the real answer should have been '
+//        .$answer_official.' because the values were '
+//        . $_SESSION['nr1'] . ' and ' .$_SESSION['nr2']. '!');
+  
+  
+  if ($input_data != $answer_official) {
+    form_set_error('mathquestion', t('Raspunsul e GRESIT . WRONG'));
+    
+  }
 }
