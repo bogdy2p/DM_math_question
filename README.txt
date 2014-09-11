@@ -1,3 +1,3 @@
-Incercare modul de "anti-bot".
+Module Example tutorial from NodeOne tutorials , math question module.
 
 Requirements : No special requirements.
