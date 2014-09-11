@@ -1,103 +1,107 @@
 <?php
-
 /*
  * @file
  * Example tutorial , math question module.
  */
-  //$_SESSION['nr1'] = rand(1, 10);
-  //$_SESSION['nr2'] = rand(1, 10);
 /**
  * Implements hook_menu().
  */
 function mathquestion_menu() {
-  $_SESSION['nr1'] = rand(1, 10);
-  $_SESSION['nr2'] = rand(1, 10);
+  
   $items['question'] = array(
-    'title' => 'Most Annoying Module',
+    'title' => 'Math Question',
     'description' => 'Mathquestion Description.... :) ',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('mathquestion_page'),
     'access callback' => 'user_access',
-    'access arguments' => array('administer_site_configuration'),
+    'access arguments' => array('access content'),
     'menu_name' => 'management',
   );
   return $items;
 }
-
 /**
  * Building the user-interface (the form).
  */
 function mathquestion_page($form, &$form_state) {
-//  dpm('FORM ONLY mathquestion_PAGE');
-//  dpm($form);
-//  dpm('FORM_STATE mathquestion_PAGE');
-//  dpm($form_state);
-
-  //hidden form field value
+  //if is set form state value 1 si value 2 , form de v alue 1 si value2 = bla bla.... IMPLEMENT.
+  
+  $val1 = rand(1,10);
+  $val2 = rand(1,10);
+  $total = $val1 + $val2;
+    //hidden form field value
   $form['nr1'] = array(
     '#type' => 'value',
-    '#value' => $_SESSION['nr1'],
+    '#value' => $val1,
   );
   //hidden form field value2
   $form['nr2'] = array(
     '#type' => 'value',
-    '#value' => $_SESSION['nr2'],
+    '#value' => $val2,
+  );
+  $form['correct_answer'] = array(
+    '#type' => 'hidden',
+    '#value' => $total,
   );
   //form field for the question
   $form['form_question'] = array(
     '#type' => 'item',
-    '#markup' => 'What is ' . $_SESSION['nr1'] . ' + ' . $_SESSION['nr2'] . '?',
+    '#markup' => 'What is ' . $val1 . ' + ' . $val2 . '?',
   );
   //form field for the input of the answer
-  $form['mathquestion'] = array(
+  $form['answer_inputed'] = array(
     '#type' => 'textfield',
     '#title' => t('Answer Here:'),
     '#description' => t('Translatable description here !'),
-    '#default_value' => '',
   );
   // The form submit field.
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Check my answer !')
   );
-//  dpm($form);
+  $form_state['redirect'] = false;
   return $form;
 }
 /**
  * Submit function for the Mathquestion page (user interface).
  */
-function mathquestion_page_submit($form, &$form_state) {
-  //dpm('submit');
-  drupal_set_message(t('GOOD ANSWER !:)'));
-  menu_rebuild();
-//  dpm('FORM ONLY mathquestion_PAGE_SUBMIT');
-//  dpm($form);
-//  dpm('FORM_STATE mathquestion_PAGE_SUBMIT');
-//  dpm($form_state);
-     // cred ca face clear cache la menu.. :)
-  //drupal_flush_all_caches();
-	//cache_clear_all(NULL, 'cache_page', '*');
-}
 
 function mathquestion_page_validate($form, &$form_state) {
-//dpm('validate');
-//  dpm('FORM ONLY mathquestion_PAGE_VALIDATE');
-//  dpm($form);
-//  dpm('FORM_STATE mathquestion_PAGE_VALIDATE');
-//  dpm($form_state);
- 
-  $input_data = $form_state['values']['mathquestion'];
-  
-  $answer_official = $_SESSION['nr1'] + $_SESSION['nr2'];
-  
-//    dpm('You entered '. $input_data .
-//        ' , the real answer should have been '
-//        .$answer_official.' because the values were '
-//        . $_SESSION['nr1'] . ' and ' .$_SESSION['nr2']. '!');
-  
-  
-  if ($input_data != $answer_official) {
-    form_set_error('mathquestion', t('Raspunsul e GRESIT . WRONG'));
+   dpm($form_state['input']['correct_answer']);
+   dpm($form_state['input']['answer_inputed']);
+   
+   if ($form_state['input']['correct_answer'] == $form_state['input']['answer_inputed']){
+     dpm('Your answer is correct !');
+   }else{ 
+     form_set_error('answer_inputed', t('Raspunsul e GRESIT . WRONG. Raspunsul era altul!' ));
+   }
+   
+   
+//   dpm('________________________________________________________________________________________');
+//    if (!isset($form_state)){
+//      drupal_set_message(t('FORM STATE E GOL AICI IN VALIDATE'));
+//    } else {
+//      dpm ('form state are ceva in el aici la validate , ia uite');
+//      dpm ($form_state);
+//    }
     
-  }
+    //$validate_nr1 = $form_state['nr1']['#value'];
+    //$validate_nr2 = $form_state['nr2']['#value'];
+    //$validate_answer = $form_state['answer']['#value'];
+    //$input_data = $form_state['mathquestion']['#value'];
+//    dpm($validate_nr1);
+//    dpm($validate_nr2);
+//    dpm($validate_answer);
+      //dpm($input_data);
+//    
+  //dpm('form STATE-ul la VALIDARE');
+  //dpm($form_state);
+   
+  //$input_data = $form_state['values']['mathquestion'];
+  //drupal_set_message(t('GOOD ANSWER !:) bine_pa!'));
+  //$answer_official = $_SESSION['nr1'] + $_SESSION['nr2'];
+  
+//  if ($input_data != $answer_official) {
+//    form_set_error('mathquestion', t('Raspunsul e GRESIT . WRONG. Raspunsul era : ' .$answer_official));
+//    
+//  }
 }
